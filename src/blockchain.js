@@ -1,57 +1,16 @@
 const { InfuraProvider } = require("@ethersproject/providers");
-const { ethers, providers } = require("ethers");
-const request = require("superagent");
+const { ethers } = require("ethers");
 
 const abi = require("./abi/abiSappy.json");
 const { contractAdress, infuraId } = require("./config.json");
+const { openseaGetImages, openseaGetPseudos } = require("./openSea");
 const { sendMessage } = require("./sendMessage");
-
 
 const provider = new InfuraProvider("homestead", {
     projectId: infuraId,
 });
 
 let lastTransactions = [];
-
-// Currently using the opensea public API to retrieve the assets, the seller and the timestamp
-async function openseaGetPseudos(adr) {
-    const openseaRes = await request
-        .get("https://api.opensea.io/api/v1/assets")
-        .query({ owner: adr })
-        .on("error", (err) => {
-            console.error("openseaGetPseudo error:", err.message);
-        });
-
-    if (openseaRes.body.assets[0].owner) {
-        const name = openseaRes.body.assets[0].owner;
-        if (
-            name.user &&
-            name.user.username &&
-            name.user.username !== "NullAddress"
-        ) {
-            // console.log("dedans");
-            return name.user.username;
-        }
-    }
-    // console.log(name);
-
-    return adr.substring(2, 8).toUpperCase();
-}
-
-async function openseaGetImages(tokenId) {
-    const openseaRes = await request
-        .get(
-            "https://api.opensea.io/api/v1/asset/" +
-                contractAdress +
-                "/" +
-                tokenId
-        )
-        .on("error", (err) => {
-            console.error("openseaGetImages error:", err.message);
-        });
-
-    return openseaRes;
-}
 
 function checkTransaction(transaction, transactionList) {
     for (let i of transactionList) {
@@ -70,14 +29,15 @@ async function getSales(blockDiff, client) {
 
     for (let transfer of transfers) {
         const tokenId = parseInt(
-            ethers.utils.formatUnits(transfer.args["tokenId"]) * 1e18
-        + 0.1);
+            ethers.utils.formatUnits(transfer.args["tokenId"]) * 1e18 + 0.1
+        );
         console.log(
             "RAW TOKEN ID: ",
             ethers.utils.formatUnits(transfer.args["tokenId"]),
             "FINAL TOKEN ID: ",
             tokenId,
-            "LOGS: ", transfer
+            "LOGS: ",
+            transfer
         );
         const transaction = transfer.transactionHash;
 
@@ -88,7 +48,9 @@ async function getSales(blockDiff, client) {
             price === "0.0" ||
             checkTransaction(transaction, lastTransactions)
         ) {
-            console.log("SAME TRANSACTION DETECTED OH SHIT OR MAYBE JUST A TRANSFER AND NOT A SALE HMMM");
+            console.log(
+                "SAME TRANSACTION DETECTED OH SHIT OR MAYBE JUST A TRANSFER AND NOT A SALE HMMM"
+            );
             console.log("TRANSACTION :", logs);
             continue;
         }
@@ -116,7 +78,7 @@ async function getSales(blockDiff, client) {
             tokenId,
             price,
             assetsURL: openseaRes.body.image_url,
-            time: openseaRes.body.last_sale.event_timestamp
+            time: openseaRes.body.last_sale.event_timestamp,
         };
         sendMessage(jsonRes, client);
         console.log("JSONRES: ", jsonRes);
