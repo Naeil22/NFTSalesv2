@@ -1,6 +1,6 @@
 const request = require("superagent");
 
-const { contractAdress } = require("./config.json");
+const { contractAdress } = require("../config.json");
 
 // Currently using the opensea public API to retrieve the assets, the seller and the timestamp
 async function openseaGetPseudos(adr) {

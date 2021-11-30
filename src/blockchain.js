@@ -1,8 +1,8 @@
 const { InfuraProvider } = require("@ethersproject/providers");
 const { ethers } = require("ethers");
 
-const abi = require("./abi/abiSappy.json");
-const { contractAdress, infuraId } = require("./config.json");
+const abi = require("../abi/abiSappy.json");
+const { contractAdress, infuraId } = require("../config.json");
 const { openseaGetImages, openseaGetPseudos } = require("./openSea");
 const { sendMessage } = require("./sendMessage");
 

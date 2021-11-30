@@ -1,6 +1,6 @@
 const { Client, Intents } = require("discord.js");
 const { token, channelId, infuraId } = require("./config.json");
-const { getSales } = require("./blockchain");
+const { getSales } = require("./src/blockchain");
 const { InfuraProvider } = require("@ethersproject/providers");
 
 const provider = new InfuraProvider("homestead", {

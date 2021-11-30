@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { channelId, contractAdress } = require("./config.json");
+const { channelId, contractAdress } = require("../config.json");
 
 
 async function sendMessage(sale, client) {
