@@ -13,11 +13,9 @@
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
-    "abi-decoder": "^2.4.0",
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
     "ethers": "^5.5.1",
-    "superagent": "^6.1.0",
-    "uuid": "^8.3.2"
+    "superagent": "^6.1.0"
   }
 }
