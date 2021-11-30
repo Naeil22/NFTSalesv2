@@ -6,5 +6,8 @@ And i'm pretty sure a lot of project don't have a private key.
 
 ## How to launch it
 
-To run the bot locally you have to create an `abi` folder that will contain the `abi.json` of the contract of your choise.
-It also needs a `config.json` at the root of the repos. Just look after the exemple to understand what you have to add in the .json it's pretty self explanatory.
+You need to have an RPC adress, infura is great and the first 100 000 request/day are free.
+After that you only need to retrieve the `abi.json` that you can find on etherscan.
+Then you have to create a `config.json` at the root of the repos.
+
+And the last things to do is to install the different dependencies with `npm i` !
