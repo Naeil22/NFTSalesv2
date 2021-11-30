@@ -18,11 +18,9 @@ async function openseaGetPseudos(adr) {
             name.user.username &&
             name.user.username !== "NullAddress"
         ) {
-            // console.log("dedans");
             return name.user.username;
         }
     }
-    // console.log(name);
 
     return adr.substring(2, 8).toUpperCase();
 }
