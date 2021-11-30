@@ -3,7 +3,7 @@ const { ethers } = require("ethers");
 
 const abi = require("../abi/abiSappy.json");
 const { contractAdress, infuraId } = require("../config.json");
-const { openseaGetImages, openseaGetPseudos } = require("./openSea");
+const {  openseaGetEvent, openseaGetPseudos } = require("./openSea");
 const { sendMessage } = require("./sendMessage");
 
 const provider = new InfuraProvider("homestead", {
@@ -42,17 +42,24 @@ async function getSales(blockDiff, client) {
         const transaction = transfer.transactionHash;
 
         let logs = await transfer.getTransaction();
-        const price = ethers.utils.formatEther(logs.value);
+        let price = ethers.utils.formatEther(logs.value);
 
-        if (
-            price === "0.0" ||
-            checkTransaction(transaction, lastTransactions)
-        ) {
-            console.log(
-                "SAME TRANSACTION DETECTED OH SHIT OR MAYBE JUST A TRANSFER AND NOT A SALE HMMM"
-            );
-            console.log("TRANSACTION :", logs);
-            continue;
+        const openseaRes = await openseaGetEvent(tokenId);
+
+        if (price === "0.0") {
+            let res = isBid(openseaRes.body, transfer.blockNumber);
+
+            if (
+                res === false ||
+                checkTransaction(transaction, lastTransactions)
+            ) {
+                console.log(
+                    "SAME TRANSACTION DETECTED OH SHIT OR MAYBE JUST A TRANSFER AND NOT A SALE HMMM"
+                );
+                console.log("TRANSACTION :", logs);
+                continue;
+            }
+            price = String(res);
         }
 
         lastTransactions.push(transaction);
@@ -67,7 +74,6 @@ async function getSales(blockDiff, client) {
 
         // Currently using the opensea public API to retrieve the assets, the seller and the timestamp
         // Might be problematic in future since it makes the bot dependant to Opensea
-        const openseaRes = await openseaGetImages(tokenId);
         const senderPseudo = await openseaGetPseudos(transfer.args["from"]);
         const receiverPseudo = await openseaGetPseudos(transfer.args["to"]);
 
@@ -83,6 +89,20 @@ async function getSales(blockDiff, client) {
         sendMessage(jsonRes, client);
         console.log("JSONRES: ", jsonRes);
     }
+}
+
+function isBid(eventBody, blockNumber) {
+    // console.log(eventBody.last_sale.transaction.block_number, blockNumber);
+
+    if (
+        eventBody.last_sale === null ||
+        parseInt(eventBody.last_sale.transaction.block_number) !== blockNumber
+    ) {
+        console.log("NOT A SALE");
+        return false;
+    }
+
+    return parseInt(eventBody.last_sale.total_price) / 1e18;
 }
 
 module.exports = { getSales };

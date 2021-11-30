@@ -11,23 +11,26 @@ async function openseaGetPseudos(adr) {
             console.error("openseaGetPseudo error:", err.message);
         });
 
-    if (openseaRes.body.assets[0].owner) {
-        const name = openseaRes.body.assets[0].owner;
-        if (
-            name.user &&
-            name.user.username &&
-            name.user.username !== "NullAddress"
-        ) {
-            // console.log("dedans");
-            return name.user.username;
-        }
+    console.log(openseaRes.body);
+
+    // IF OF THE DEATH
+    if (
+        openseaRes.body &&
+        openseaRes.body.assets[0] &&
+        openseaRes.body.assets[0].owner &&
+        openseaRes.body.assets[0].owner.user &&
+        openseaRes.body.assets[0].owner.user.username &&
+        openseaRes.body.assets[0].owner.user.username !== "NullAddress"
+    ) {
+        return openseaRes.body.assets[0].owner.user.username;
     }
+
     // console.log(name);
 
     return adr.substring(2, 8).toUpperCase();
 }
 
-async function openseaGetImages(tokenId) {
+async function openseaGetEvent(tokenId) {
     const openseaRes = await request
         .get(
             "https://api.opensea.io/api/v1/asset/" +
@@ -42,4 +45,4 @@ async function openseaGetImages(tokenId) {
     return openseaRes;
 }
 
-module.exports = { openseaGetImages, openseaGetPseudos };
+module.exports = { openseaGetEvent, openseaGetPseudos };

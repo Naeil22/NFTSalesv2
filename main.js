@@ -17,7 +17,7 @@ client.once("ready", async () => {
     let oldBlock = await provider.getBlockNumber();
 
     // When it runs the first time check the latest 1000 block
-    await getSales(300, client);
+    await getSales(1000, client);
 
     setInterval(async () => {
         let newBlock = await provider.getBlockNumber();
