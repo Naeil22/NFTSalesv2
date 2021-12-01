@@ -1,8 +1,7 @@
 {
-	"clientId": "Discord client ID ",
-	"guildId": "Discord guild ID",
-	"token": "Discord token",
-	"contractAdress": "Adress",
-	"rpcAdress": "Adress",
+	"guildId": "Discord server ID",
+	"token": "Discord bot token",
+	"contractAdress": "Adress of the contract",
+	"infuraId": "Infura Adress",
 	"channelId": "Discord channel ID"
 }
